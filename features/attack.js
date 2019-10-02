@@ -9,12 +9,10 @@ module.exports = function(controller) {
       m.forEach((match, groupIndex) => {
         target = match.trim();
       });
+
       const attacker = message.reference.user.name;
-      const verb = controller.caine.getVerb();
-      const noun = controller.caine.getNoun();
-      const adjective = controller.caine.getAdjective();
-      const attack = controller.caine.getAttack();
-      await bot.say(`${attacker} ${verb} ${target} with her ${adjective} ${noun} ${attack}!`);
+
+      await controller.caine.attack(bot, attacker, target);
     }
   });
 }

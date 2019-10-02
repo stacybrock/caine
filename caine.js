@@ -1,29 +1,22 @@
+const DynamoDbBackend = require('./storage/dynamodb');
+
 class Caine {
   constructor() {
-    this.verbs = ['smashes', 'hits', 'strikes', 'nails', 'decimates', 'annihilates', 'demolishes', 'smites', 'wallops', 'pummels'];
-    this.adjectives = ['immaculate', 'resplendent', 'terrifying', 'sagacious', 'perfect', 'splendid', 'drunken', 'demonic', 'pugnacious', 'fantastic', 'chaotic', 'punishing'];
-    this.nouns = ['demon', 'hurricane', 'death', 'volcano', 'cannonball', 'laser', 'tiger', 'ninja'];
-    this.attacks = ['kick', 'punch', 'claws', 'slam', 'blast'];
+    this.storage = new DynamoDbBackend();
   }
 
-  randomItem(list) {
-    return list[Math.floor(Math.random() * (list.length - 0) + 0)];
-  }
-
-  getVerb() {
-    return this.randomItem(this.verbs);
-  }
-
-  getNoun() {
-    return this.randomItem(this.nouns);
-  }
-
-  getAdjective() {
-    return this.randomItem(this.adjectives);
-  }
-
-  getAttack() {
-    return this.randomItem(this.attacks);
+  async attack(bot, attacker, target) {
+    const promises = this.storage.getStoragePromises();
+    await Promise.all(promises).then(async data => {
+      const _randomItem = list => {
+        return list[Math.floor(Math.random() * (list.length - 0) + 0)];
+      };
+      const verb = _randomItem(data[0]);
+      const noun = _randomItem(data[1]);
+      const adjective = _randomItem(data[2]);
+      const attack = _randomItem(data[3]);
+      await bot.say(`${attacker} ${verb} ${target} with their ${adjective} ${noun} ${attack}!`);
+    });
   }
 }
 
